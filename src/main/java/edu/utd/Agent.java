@@ -1,6 +1,7 @@
 package edu.utd;
 
 import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 
 import java.lang.instrument.ClassFileTransformer;
@@ -13,8 +14,7 @@ public class Agent {
         System.out.println("Java Agent is running");
         inst.addTransformer(new ClassFileTransformer() {
             public byte[] transform(ClassLoader classLoader, String className, Class<?> aClass, ProtectionDomain protectionDomain, byte[] bytes) throws IllegalClassFormatException {
-                System.out.println("transforming " + className);
-                // ASM Code
+                 System.out.println("transforming " + className);
                 if (className.startsWith("org/apache/commons/lang3")
                 ){
                     System.out.println(className);

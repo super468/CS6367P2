@@ -3,6 +3,7 @@ package edu.utd;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 
 class ClassTransformVisitor extends ClassVisitor implements Opcodes {
 
@@ -24,7 +25,10 @@ class ClassTransformVisitor extends ClassVisitor implements Opcodes {
     public MethodVisitor visitMethod(final int access, final String name,
                                      final String desc, final String signature, final String[] exceptions) {
         MethodVisitor mv = cv.visitMethod(access, name, desc, signature, exceptions);
-        return mv == null ? null : new MethodTransformVisitor(mv, className);
+        DataTraceCollection.methodName = name;
+        Type methodType = Type.getMethodType(desc);
+        int len = methodType.getArgumentTypes().length;
+        return mv == null ? null : new MethodTransformVisitor(mv, className, methodType.getArgumentTypes(), len);
     }
 }
 

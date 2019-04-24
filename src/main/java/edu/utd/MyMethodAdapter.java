@@ -1,32 +1,27 @@
 package edu.utd;
 
-import edu.utd.object.Status;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
-import org.objectweb.asm.tree.FieldNode;
-import org.objectweb.asm.tree.LocalVariableNode;
 import org.objectweb.asm.tree.MethodNode;
 
 import java.util.List;
 
 public class MyMethodAdapter extends MethodNode implements Opcodes{
     Type[] paramTypes;
-    public List<String> argumentNames;
     public int argLen;
+
     public MyMethodAdapter(int access, String name, String desc,
-                           String signature, String[] exceptions, MethodVisitor mv, Type[] paramTypes, List<String> argumentNames, int argLen) {
+                           String signature, String[] exceptions, MethodVisitor mv, Type[] paramTypes, int argLen) {
         super(ASM5, access, name, desc, signature, exceptions);
         this.mv = mv;
         this.paramTypes = paramTypes;
-        this.argumentNames = argumentNames;
         this.argLen = argLen;
     }
 
     @Override
     public void visitCode(){
-        DataTraceCollection.status = new Status();
 //        System.out.println("Method Executed");
 //        if(this.localVariables == null) System.out.println("local null XXXX");
 //        System.out.println(this.localVariables.size());
@@ -102,20 +97,55 @@ public class MyMethodAdapter extends MethodNode implements Opcodes{
     }
     @Override
     public void visitLocalVariable(String name, String desc, String signature, Label start, Label end, int index){
+        super.visitLocalVariable(name,desc,signature,start,end,index);
         if("this".equals(name)) {
             return;
         }
         if(argLen-- > 0) {
             //argumentNames.add(name);
             DataTraceCollection.localName = name;
-            DataTraceCollection.type = Type.getType(desc);
-
+            Type tp = Type.getType(desc);
+            DataTraceCollection.type = tp;
+            if (tp.equals(Type.BOOLEAN_TYPE)) {
+                mv.visitVarInsn(Opcodes.ILOAD, index);
+                mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Boolean", "valueOf", "(Z)Ljava/lang/Boolean;", false);
+            }
+            else if (tp.equals(Type.BYTE_TYPE)) {
+                mv.visitVarInsn(Opcodes.ILOAD, index);
+                mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Byte", "valueOf", "(B)Ljava/lang/Byte;", false);
+            }
+            else if (tp.equals(Type.CHAR_TYPE)) {
+                mv.visitVarInsn(Opcodes.ILOAD, index);
+                mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Character", "valueOf", "(C)Ljava/lang/Character;", false);
+            }
+            else if (tp.equals(Type.SHORT_TYPE)) {
+                mv.visitVarInsn(Opcodes.ILOAD, index);
+                mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Short", "valueOf", "(S)Ljava/lang/Short;", false);
+            }
+            else if (tp.equals(Type.INT_TYPE)) {
+                mv.visitVarInsn(Opcodes.ILOAD, index);
+                mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;", false);
+            }
+            else if (tp.equals(Type.LONG_TYPE)) {
+                mv.visitVarInsn(Opcodes.LLOAD, index);
+                mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Long", "valueOf", "(J)Ljava/lang/Long;", false);
+            }
+            else if (tp.equals(Type.FLOAT_TYPE)) {
+                mv.visitVarInsn(Opcodes.FLOAD, index);
+                mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Float", "valueOf", "(F)Ljava/lang/Float;", false);
+            }
+            else if (tp.equals(Type.DOUBLE_TYPE)) {
+                mv.visitVarInsn(Opcodes.DLOAD, index);
+                mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;", false);
+            }
+            else
+                mv.visitVarInsn(Opcodes.ALOAD, index);
+            mv.visitMethodInsn(INVOKESTATIC, "edu/utd/DataTraceCollection", "addVariableValue", "(Ljava/lang/Object;)V", false);
+            System.out.println("The type descriptor of this local variable." + desc);
+            System.out.println("The local variable's index." + index);
+            System.out.println("The name of a local variable." + name);
+            System.out.println("The signature of this local variable." + signature);
         }
-        System.out.println("The type descriptor of this local variable." + desc);
-        System.out.println("The local variable's index." + index);
-        System.out.println("The name of a local variable." + name);
-        System.out.println("The signature of this local variable." + signature);
-        super.visitLocalVariable(name,desc,signature,start,end,index);
     }
 
     @Override
@@ -135,6 +165,7 @@ public class MyMethodAdapter extends MethodNode implements Opcodes{
 //            System.out.println("The name of a local variable." + localVariableNode.name);
 //            System.out.println("The signature of this local variable." + localVariableNode.signature);
 //        }
+        super.visitEnd();
         accept(mv);
     }
 
