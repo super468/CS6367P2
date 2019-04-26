@@ -21,30 +21,29 @@ public class JUnitExecutionListener extends RunListener {
 
     // When test suite finished running
     public void testRunFinished(Result result) throws Exception {
-//        System.out.println("Test Run Finished\n");
-//        try {
-//            FileWriter fw = new FileWriter("datatrace.txt",true);
-//            StringBuffer sb = new StringBuffer();
-//            sb.append("test test");
-////            for(String methodName : DataTraceCollection.map.keySet()) {
-////                // write [Test] + Name
-////                sb.append(methodName + "\n");
-////                // write className + line
-////                List<Variable> variables = DataTraceCollection.map.get(methodName);
-////
-////                for(Variable variable : variables){
-////                    sb.append(variable.getType().toString() + " " + variable.getName() + " ");
-////                    for(Object obj : variable.getValues()){
-////                        sb.append(obj + " ");
-////                    }
-////                    sb.append("\n");
-////                }
-////            }
-//            fw.write(sb.toString());
-//            fw.close();
-//        } catch (IOException ex) {
-//            System.err.println("Couldn't log this");
-//        }
+        System.out.println("Test Run Finished\n");
+        try {
+            FileWriter fw = new FileWriter("/Users/wangtaishan/Desktop/datatrace.txt",true);
+            StringBuffer sb = new StringBuffer();
+            //sb.append("test test");
+            for(String methodName : DataTraceCollection.map.keySet()) {
+                // write [Test] + Name
+                sb.append("Method Name: " + methodName + "\n");
+                // write className + line
+                List<Variable> variables = DataTraceCollection.map.get(methodName);
+                for(Variable variable : variables){
+                    sb.append("Variable: " + variable.getType().toString() + " " + variable.getName() + "\n");
+                    for(Object obj : variable.getValues()){
+                        sb.append(obj + "\n");
+                    }
+                    //sb.append("\n");
+                }
+            }
+            fw.write(sb.toString());
+            fw.close();
+        } catch (IOException ex) {
+            System.err.println("Couldn't log this");
+        }
     }
 
     // When a single test started to run

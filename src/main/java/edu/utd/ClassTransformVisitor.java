@@ -25,10 +25,13 @@ class ClassTransformVisitor extends ClassVisitor implements Opcodes {
     public MethodVisitor visitMethod(final int access, final String name,
                                      final String desc, final String signature, final String[] exceptions) {
         MethodVisitor mv = cv.visitMethod(access, name, desc, signature, exceptions);
+        if(!DataTraceCollection.staticmap.containsKey(className + "/" + name + "/" + signature)){
+            DataTraceCollection.staticmap.put(className + "/" + name + "/" + signature, true);
+        }
         DataTraceCollection.methodName = name;
         Type methodType = Type.getMethodType(desc);
         int len = methodType.getArgumentTypes().length;
-        return mv == null ? null : new MethodTransformVisitor(mv, className, methodType.getArgumentTypes(), len);
+        return mv == null ? null : new MethodTransformVisitor(mv, className, name, signature, methodType.getArgumentTypes(), len, access);
     }
 }
 

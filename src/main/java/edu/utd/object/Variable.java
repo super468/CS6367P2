@@ -8,6 +8,16 @@ import java.util.List;
 public class Variable {
     private Type type;
     private String name;
+    private int index;
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
     private List<Object> values;
 
     public void setType(Type type) {
@@ -18,11 +28,11 @@ public class Variable {
         this.name = name;
     }
 
-    public Variable(Type type, String name, Object value) {
+    public Variable(Type type, String name, int index) {
         this.type = type;
         this.name = name;
         this.values = new ArrayList<Object>();
-        this.values.add(value);
+        this.index = index;
     }
 
     public void setValues(List<Object> values) {
