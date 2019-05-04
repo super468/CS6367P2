@@ -41,7 +41,6 @@ class MethodTransformVisitor extends MethodVisitor implements Opcodes {
         if(!methodName.equals("<init>")) {
             int paramLength = paramTypes.length;
             System.out.println(className + "." + methodName + "." + signature + ": paramLength = " + paramLength);
-            // System.out.println("ffffffffff");
             // set the starting index, if the method is static starting from 0,
             // otherwise starting from 1
             int i = 1;
@@ -49,11 +48,6 @@ class MethodTransformVisitor extends MethodVisitor implements Opcodes {
                 System.out.println("in visitCode " + className + "/" + methodName + "/" + signature + "is a static method");
                 i = 0;
             }
-//            if (!DataTraceCollection.staticmap.get(className + "/" + methodName + "/" + signature)) {
-//                //System.out.println("in visitCode " + className + "/" + methodName + "/" + signature + "is a virtual method");
-//                i = 1;
-//            }
-            //System.out.println("xxxxxxxxx");
             for (Type tp : paramTypes) {
                 System.out.println("tp.getClassName() = " + tp.getClassName());
                 if (tp.equals(Type.BOOLEAN_TYPE)) {
@@ -101,7 +95,7 @@ class MethodTransformVisitor extends MethodVisitor implements Opcodes {
     @Override
     public void visitLocalVariable(String name, String desc, String signature, Label start, Label end, int index){
         if("this".equals(name)){
-            DataTraceCollection.staticmap.put(className + "/" + methodName + "/" + this.signature, false);
+            //DataTraceCollection.staticmap.put(className + "/" + methodName + "/" + this.signature, false);
             //System.out.println(className + "/" + methodName + "/" + this.signature + "is a virtual method");
         } else if(argLen-- > 0) {
             String s = className + "/" + methodName + "/" + this.signature;

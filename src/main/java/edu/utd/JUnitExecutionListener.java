@@ -34,7 +34,7 @@ public class JUnitExecutionListener extends RunListener {
                 for(Variable variable : variables){
                     sb.append("Variable: " + variable.getType().toString() + " " + variable.getName() + "\n");
                     for(Object obj : variable.getValues()){
-                        sb.append(obj + "\n");
+                        sb.append("Value: " + obj + "\n");
                     }
                     //sb.append("\n");
                 }
