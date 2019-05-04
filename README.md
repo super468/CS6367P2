@@ -1,6 +1,6 @@
-#CS63637P2
+# CS63637P2
 
-##Design
+## Design
 this project consists of two parts, which are front end and
 back end.
 
